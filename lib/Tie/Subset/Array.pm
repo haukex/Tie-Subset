@@ -27,7 +27,7 @@ This class for tied arrays provides a "view" of a subset of an array.
 
 =cut
 
-our $VERSION = '0.01';
+our $VERSION = '0.02';
 
 =item C<tie>ing
 

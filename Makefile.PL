@@ -13,15 +13,15 @@ WriteMakefile(
 		provides     => {
 			'Tie::Subset' => {
 				file    => 'lib/Tie/Subset.pm',
-				version => '0.01',
+				version => '0.02',
 			},
 			'Tie::Subset::Hash' => {
 				file    => 'lib/Tie/Subset/Hash.pm',
-				version => '0.01',
+				version => '0.02',
 			},
 			'Tie::Subset::Array' => {
 				file    => 'lib/Tie/Subset/Array.pm',
-				version => '0.01',
+				version => '0.02',
 			},
 		},
 		resources    => {

@@ -33,9 +33,9 @@ BEGIN {
 	use_ok 'Tie::Subset::Hash'  or BAIL_OUT("failed to use Tie::Subset::Hash");
 	use_ok 'Tie::Subset::Array' or BAIL_OUT("failed to use Tie::Subset::Array");
 }
-is $Tie::Subset::VERSION, '0.01', 'Tie::Subset version matches tests';
-is $Tie::Subset::Hash::VERSION,  '0.01', 'Tie::Subset::Hash version matches tests';
-is $Tie::Subset::Array::VERSION, '0.01', 'Tie::Subset::Array version matches tests';
+is $Tie::Subset::VERSION,        '0.02', 'Tie::Subset version matches tests';
+is $Tie::Subset::Hash::VERSION,  '0.02', 'Tie::Subset::Hash version matches tests';
+is $Tie::Subset::Array::VERSION, '0.02', 'Tie::Subset::Array version matches tests';
 
 my %hash = map {$_=>uc() x 3} 'a'..'z';
 tie my %subset, 'Tie::Subset::Hash', \%hash, ['f'..'k'];
