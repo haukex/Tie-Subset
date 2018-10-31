@@ -35,7 +35,7 @@ our $VERSION = '0.02';
 
 You must specify which subset of indices from the original array
 should be part of the new array. (Indices that do not yet exist in
-the original hash may be specified.) The subset (tied array) will
+the original array may be specified.) The subset (tied array) will
 be the same size as C<@indices>, and is indexed by the usual 0 to
 C<$#subset>.
 
