@@ -12,6 +12,9 @@ commands `perldoc lib/Tie/Subset/Hash.pm` and
 `perldoc lib/Tie/Subset/Array.pm`) and the file `Changes` for
 version information.
 
+[![Travis CI Build Status](https://travis-ci.org/haukex/Tie-Subset.svg)](https://travis-ci.org/haukex/Tie-Subset)
+[![CPAN Testers](https://badges.zero-g.net/cpantesters/Tie-Subset.svg)](http://matrix.cpantesters.org/?dist=Tie-Subset)
+
 Installation
 ------------
 
@@ -22,7 +25,7 @@ To install this distribution type the following:
 	make test
 	make install
 
-If you are running Windows, you may need to use `dmake`, `nmake`, 
+If you are running Windows, you may need to use `dmake`, `nmake`,
 or `gmake` instead of `make`.
 
 Dependencies
