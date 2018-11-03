@@ -1,13 +1,14 @@
 Tie-Subset
 ==========
 
-This is the distribution of the Perl modules `Tie::Subset::Hash`
-and `Tie::Subset::Array`.
+This is the distribution of the Perl modules
+[`Tie::Subset::Hash`](https://metacpan.org/pod/Tie::Subset::Hash) and
+[`Tie::Subset::Array`](https://metacpan.org/pod/Tie::Subset::Array).
 
 They are Perl extensions for `tie`-ing arrays and hashes to a
 subset of another array or hash, respectively.
 
-Please see the module's documentation (POD) for details (try the
+Please see the modules' documentation (POD) for details (try the
 commands `perldoc lib/Tie/Subset/Hash.pm` and
 `perldoc lib/Tie/Subset/Array.pm`) and the file `Changes` for
 version information.
