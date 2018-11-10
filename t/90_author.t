@@ -6,6 +6,9 @@ use strict;
 
 Tests for the Perl modules L<Tie::Subset::Array> and L<Tie::Subset::Hash>.
 
+=for comment
+TODO Later: I should improve test coverage
+
 =head1 Author, Copyright, and License
 
 Copyright (c) 2018 Hauke Daempfling (haukex@zero-g.net).
