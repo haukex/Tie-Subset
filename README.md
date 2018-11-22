@@ -14,6 +14,7 @@ commands `perldoc lib/Tie/Subset/Hash.pm` and
 version information.
 
 [![Travis CI Build Status](https://travis-ci.org/haukex/Tie-Subset.svg)](https://travis-ci.org/haukex/Tie-Subset)
+[![AppVeyor Build Status](https://ci.appveyor.com/api/projects/status/github/haukex/Tie-Subset?svg=true)](https://ci.appveyor.com/project/haukex/tie-subset)
 [![Kwalitee Score](https://cpants.cpanauthors.org/dist/Tie-Subset.svg)](https://cpants.cpanauthors.org/dist/Tie-Subset)
 [![CPAN Testers](https://badges.zero-g.net/cpantesters/Tie-Subset.svg)](http://matrix.cpantesters.org/?dist=Tie-Subset)
 
