@@ -11,5 +11,4 @@ t/10_hash.t
 t/20_array.t
 t/80_alias.t
 t/90_author.t
-t/perlcriticrc
 t/Tie_Subset_Testlib.pm

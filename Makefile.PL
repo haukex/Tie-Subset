@@ -63,3 +63,11 @@ WriteMakefile(
 		# note I haven't included modules needed for author tests here
 	},
 );
+sub MY::postamble {
+	return <<'MAKE_FRAG';
+.PHONY: authorcover
+authorcover: test
+	cpanm Devel::Cover Pod::Coverage::CountParents
+	cover -test
+MAKE_FRAG
+}
