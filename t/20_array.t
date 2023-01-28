@@ -52,12 +52,6 @@ subtest 'Tie::Subset' => sub {
 	isa_ok tied(@ss), 'Tie::Subset::Array';
 };
 
-# Untie
-tie my @test1, 'Tie::Subset::Array', ['a','b','c'], [0,1];
-is_deeply \@test1, ['a','b'];
-untie @test1;
-is_deeply \@test1, [];
-
 # Fetching
 is $subset[0], 33;
 is $subset[1], 44;
@@ -130,5 +124,9 @@ ok exception { tie my @foo, 'Tie::Subset::Array', [1..3], [\0] };
 		delete $subset[0];
 	};
 }
+
+# Untie
+untie @subset;
+is_deeply \@subset, [];
 
 done_testing;

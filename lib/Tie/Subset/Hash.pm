@@ -44,7 +44,7 @@ sub TIEHASH {  ## no critic (RequireArgUnpacking)
 	my ($class, $hash, $keys) = @_;
 	ref $hash eq 'HASH' or croak "must provide hashref to tie";
 	ref $keys eq 'ARRAY' or croak "must provide key list to tie";
-	for (@$keys) { croak "bad hash key '$_'" if ref || !defined }
+	for (@$keys) { croak "bad hash key '$_'" if ref; croak "bad hash key undef" if !defined }
 	my $self = { hash => $hash, keys => { map {$_=>1} @$keys } };
 	return bless $self, $class;
 }
@@ -88,7 +88,10 @@ in the underlying hash.
 
 sub EXISTS {
 	my ($self,$key) = @_;
-	return exists $self->{keys}{$key} && exists $self->{hash}{$key};
+	# need to write this in this slightly strange way because otherwise
+	# the code coverage tool isn't picking it up correctly...
+	if ( exists $self->{keys}{$key} && exists $self->{hash}{$key} )
+		{ return !!1 } else { return !!0 }
 }
 
 =item Iterating (C<each>, C<keys>, etc.)

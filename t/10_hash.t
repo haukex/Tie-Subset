@@ -107,4 +107,26 @@ is_deeply \%hash, {def=>111,ghi=>222,jkl=>333};
 
 isa_ok tied(%subset), 'Tie::Subset::Hash';
 
+# Errors
+ok exception { tie my %foo, 'Tie::Subset::Hash', {x=>1,y=>2}, ['x'], 'foo' };
+ok exception { tie my %foo, 'Tie::Subset::Hash', [], ['x'] };
+ok exception { tie my %foo, 'Tie::Subset::Hash', {x=>1,y=>2}, {} };
+ok exception { tie my %foo, 'Tie::Subset::Hash', {x=>1,y=>2}, [undef] };
+ok exception { tie my %foo, 'Tie::Subset::Hash', {x=>1,y=>2}, [\'x'] };
+
+# Scalar
+is scalar(%subset), scalar( %{tied(%subset)->{keys}} );
+
+# Not Supported
+{
+	no warnings FATAL=>'all'; use warnings;  ## no critic (ProhibitNoWarnings)
+	ok 1==grep { /\b\Qnot (yet) supported\E\b/ } warns {
+		%subset = ();
+	};
+}
+
+# Untie
+untie %subset;
+is_deeply \%subset, {};
+
 done_testing;
