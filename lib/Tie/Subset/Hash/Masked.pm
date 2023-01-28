@@ -1,5 +1,5 @@
 #!perl
-package Tie::Subset::Hash;
+package Tie::Subset::Hash::Masked;
 use warnings;
 use strict;
 use warnings::register;
@@ -9,19 +9,20 @@ use Carp;
 
 =head1 Name
 
-Tie::Subset::Hash - Tie a hash to a subset of another hash
+Tie::Subset::Hash::Masked - Tie a hash to mask some of its keys
 
 =head1 Synopsis
 
- use Tie::Subset::Hash;
+ use Tie::Subset::Hash::Masked;
+ use Data::Dumper;
  my %hash = ( foo=>11, bar=>22, quz=>33 );
- tie my %subset, 'Tie::Subset::Hash', \%hash, ['bar','quz'];
- print "$subset{bar}\n";  # prints "22"
- $subset{quz}++;          # modifies $hash{quz}
+ tie my %masked, 'Tie::Subset::Hash::Masked', \%hash, ['bar','quz'];
+ print Dumper(\%masked);  # shows only { foo => 11 }
+ $masked{baz}++;          # adds this key to %masked and %hash
 
 =head1 Description
 
-This class for tied hashes provides a "view" of a subset of a hash.
+This class for tied hashes provides a masked "view" of a hash.
 
 =over
 
@@ -31,58 +32,57 @@ our $VERSION = '0.02';
 
 =item C<tie>ing
 
- tie my %subset, 'Tie::Subset::Hash', \%hash, \@keys;
+ tie my %masked, 'Tie::Subset::Hash::Masked', \%hash, \@mask;
 
-You must specify which subset of keys from the original hash can
-be accessed via the tied hash. (Keys that do not yet exist in the
-original hash may be specified.)
+You must specify which keys from the original hash should be masked
+in the tied hash. (Keys that do not yet exist in the original hash
+may also be specified.)
 
 =cut
 
 sub TIEHASH {  ## no critic (RequireArgUnpacking)
 	@_==3 or croak "bad number of arguments to tie";
-	my ($class, $hash, $keys) = @_;
+	my ($class, $hash, $mask) = @_;
 	ref $hash eq 'HASH' or croak "must provide hashref to tie";
-	ref $keys eq 'ARRAY' or croak "must provide key list to tie";
-	for (@$keys) { croak "bad hash key '$_'" if ref; croak "bad hash key undef" if !defined }
-	my $self = { hash => $hash, keys => { map {$_=>1} @$keys } };
+	ref $mask eq 'ARRAY' or croak "must provide key list to mask";
+	for (@$mask) { croak "bad hash key '$_'" if ref; croak "bad hash key undef" if !defined }
+	my $self = { hash => $hash, mask => { map {$_=>1} @$mask } };
 	return bless $self, $class;
 }
 
 =item Fetching
 
-If the key is in the subset, the value from the underlying hash is
-returned, otherwise returns nothing (undef).
+If the key is masked, returns nothing (undef), otherwise, the value
+from the underlying hash is returned.
 
 =cut
 
 sub FETCH {
 	my ($self,$key) = @_;
-	return unless exists $self->{keys}{$key};
+	return if exists $self->{mask}{$key};
 	return $self->{hash}{$key};
 }
 
 =item Storing
 
-If the key is in the subset, the new value will be stored in the
-underlying hash, otherwise the operation is ignored and a warning
-issued.
+If the key is masked, the operation is ignored and a warning issued,
+otherwise, the new value will be stored in the underlying hash.
 
 =cut
 
 sub STORE {
 	my ($self,$key,$val) = @_;
-	if (exists $self->{keys}{$key}) {
+	if (not exists $self->{mask}{$key}) {
 		return $self->{hash}{$key} = $val;
 	} # else
-	warnings::warnif("assigning to unknown key '$key' not (yet) supported in ".ref($self).", ignoring");
+	warnings::warnif("assigning to masked key '$key' not (yet) supported in ".ref($self).", ignoring");
 	return;
 }
 
 =item C<exists>
 
-Will return true only if the key is in the subset I<and> it exists
-in the underlying hash.
+Will return true only if the key exists in the underlying hash I<and>
+the key is not masked.
 
 =cut
 
@@ -90,13 +90,13 @@ sub EXISTS {
 	my ($self,$key) = @_;
 	# need to write this in this slightly strange way because otherwise
 	# the code coverage tool isn't picking it up correctly...
-	if ( exists $self->{keys}{$key} && exists $self->{hash}{$key} )
+	if ( !exists $self->{mask}{$key} && exists $self->{hash}{$key} )
 		{ return !!1 } else { return !!0 }
 }
 
 =item Iterating (C<each>, C<keys>, etc.)
 
-Only keys that exist both in the subset I<and> the underlying hash
+Only keys that exist in the underlying hash I<and> that aren't masked
 are iterated over. The iterator of the underlying hash is utilized,
 so iterating over the tied hash will affect the state of the iterator
 of the underlying hash.
@@ -105,34 +105,33 @@ of the underlying hash.
 
 sub FIRSTKEY {
 	my ($self) = @_;
-	my $dummy = keys %{$self->{keys}};  # reset iterator
+	my $dummy = keys %{$self->{hash}};  # reset iterator
 	return $self->NEXTKEY;
 }
 sub NEXTKEY {
 	my ($self,$lkey) = @_;
 	my $next;
 	SEEK: {
-		$next = each %{$self->{keys}};
+		$next = each %{$self->{hash}};
 		return unless defined $next;
-		redo SEEK unless exists $self->{hash}{$next};
+		redo SEEK if exists $self->{mask}{$next};
 	}
 	return $next;
 }
 
 =item C<delete>ing
 
-If the key is in the subset, the key will be deleted from the
-underlying hash, but not the subset. Otherwise, the operation is
-ignored and a warning issued.
+If the key is masked, the operation is ignored and a warning issued,
+otherwise, the key will be deleted from the underlying hash.
 
 =cut
 
 sub DELETE {
 	my ($self,$key) = @_;
-	if (exists $self->{keys}{$key}) {
+	if (not exists $self->{mask}{$key}) {
 		return delete $self->{hash}{$key};
 	} # else
-	warnings::warnif("deleting unknown key '$key' not (yet) supported in ".ref($self).", ignoring");
+	warnings::warnif("deleting masked key '$key' not (yet) supported in ".ref($self).", ignoring");
 	return;
 }
 
@@ -156,13 +155,19 @@ sub CLEAR {
 
 sub SCALAR {
 	my ($self) = @_;
-	return scalar %{$self->{keys}};
+	# I'm not sure why the following counts as two statements in the coverage tool
+	# uncoverable branch true
+	# uncoverable statement count:2
+	return scalar %{$self->{hash}} if $] lt '5.026';
+	my %keys = map {$_=>1} keys %{$self->{hash}};
+	delete @keys{ keys %{$self->{mask}} };
+	return scalar keys %keys;
 }
 
 sub UNTIE {
 	my ($self) = @_;
 	$self->{hash} = undef;
-	$self->{keys} = undef;
+	$self->{mask} = undef;
 	return;
 }
 
@@ -173,13 +178,13 @@ __END__
 
 =head1 See Also
 
-L<Tie::Subset::Hash::Masked>
+L<Tie::Subset::Hash>
 
 L<Tie::Subset/"See Also">
 
 =head1 Author, Copyright, and License
 
-Copyright (c) 2018-2023 Hauke Daempfling (haukex@zero-g.net).
+Copyright (c) 2023 Hauke Daempfling (haukex@zero-g.net).
 
 This library is free software; you can redistribute it and/or modify
 it under the same terms as Perl 5 itself.

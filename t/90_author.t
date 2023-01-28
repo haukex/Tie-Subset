@@ -34,12 +34,14 @@ BEGIN {
 		catfile($BASEDIR,qw/ lib Tie Subset.pm /),
 		catfile($BASEDIR,qw/ lib Tie Subset Array.pm /),
 		catfile($BASEDIR,qw/ lib Tie Subset Hash.pm /),
+		catfile($BASEDIR,qw/ lib Tie Subset Hash Masked.pm /),
 		bsd_glob("$BASEDIR/t/*.{t,pm}"),
 	);
 	@PODFILES = (
 		catfile($BASEDIR,qw/ lib Tie Subset.pm /),
 		catfile($BASEDIR,qw/ lib Tie Subset Array.pm /),
 		catfile($BASEDIR,qw/ lib Tie Subset Hash.pm /),
+		catfile($BASEDIR,qw/ lib Tie Subset Hash Masked.pm /),
 	);
 }
 

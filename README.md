@@ -2,16 +2,17 @@ Tie-Subset
 ==========
 
 This is the distribution of the Perl modules
-[`Tie::Subset::Hash`](https://metacpan.org/pod/Tie::Subset::Hash) and
+[`Tie::Subset::Hash`](https://metacpan.org/pod/Tie::Subset::Hash),
+[`Tie::Subset::Hash`](https://metacpan.org/pod/Tie::Subset::Hash::Masked), and
 [`Tie::Subset::Array`](https://metacpan.org/pod/Tie::Subset::Array).
 
 They are Perl extensions for `tie`-ing arrays and hashes to a
 subset of another array or hash, respectively.
 
 Please see the modules' documentation (POD) for details (try the
-commands `perldoc lib/Tie/Subset/Hash.pm` and
-`perldoc lib/Tie/Subset/Array.pm`) and the file `Changes` for
-version information.
+commands `perldoc lib/Tie/Subset/Hash.pm`, `perldoc
+lib/Tie/Subset/Hash/Masked.pm`, and `perldoc lib/Tie/Subset/Array.pm`)
+and the file `Changes` for version  information.
 
 [![Travis CI Build Status](https://travis-ci.org/haukex/Tie-Subset.svg)](https://travis-ci.org/haukex/Tie-Subset)
 [![AppVeyor Build Status](https://ci.appveyor.com/api/projects/status/github/haukex/Tie-Subset?svg=true)](https://ci.appveyor.com/project/haukex/tie-subset)

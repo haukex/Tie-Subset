@@ -65,7 +65,8 @@ the underlying array is returned, otherwise returns nothing (undef).
 
 sub FETCH {
 	my ($self,$i) = @_;
-	return if $i < 0; # uncoverable branch true
+	# uncoverable branch true
+	return if $i < 0;
 	return if $i > $#{ $self->{idx} };
 	return $self->{arr}[ $self->{idx}[$i] ];
 }
