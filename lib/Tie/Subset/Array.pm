@@ -65,7 +65,8 @@ the underlying array is returned, otherwise returns nothing (undef).
 
 sub FETCH {
 	my ($self,$i) = @_;
-	return if $i < 0 || $i > $#{ $self->{idx} };
+	return if $i < 0; # uncoverable branch true
+	return if $i > $#{ $self->{idx} };
 	return $self->{arr}[ $self->{idx}[$i] ];
 }
 
@@ -79,7 +80,8 @@ ignored and a warning issued.
 
 sub STORE {
 	my ($self,$i,$v) = @_;
-	if ( $i < 0 || $i > $#{ $self->{idx} } ) {
+	return if $i < 0; # uncoverable branch true
+	if ( $i > $#{ $self->{idx} } ) {
 		warnings::warnif("storing values outside of the subset not (yet) supported in ".ref($self));
 		return;
 	}
@@ -170,9 +172,10 @@ sub SPLICE {
 }
 
 sub EXTEND {
-	my ($self,$s) = @_;
-	warnings::warnif("extending ".ref($self)." not (yet) supported");
-	return;
+	# uncoverable subroutine
+	my ($self,$s) = @_;  # uncoverable statement
+	warnings::warnif("extending ".ref($self)." not (yet) supported");  # uncoverable statement
+	return;  # uncoverable statement
 }
 
 sub DELETE {

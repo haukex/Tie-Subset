@@ -52,6 +52,12 @@ subtest 'Tie::Subset' => sub {
 	isa_ok tied(@ss), 'Tie::Subset::Array';
 };
 
+# Untie
+tie my @test1, 'Tie::Subset::Array', ['a','b','c'], [0,1];
+is_deeply \@test1, ['a','b'];
+untie @test1;
+is_deeply \@test1, [];
+
 # Fetching
 is $subset[0], 33;
 is $subset[1], 44;
@@ -63,6 +69,11 @@ is $subset[6], undef;
 is $subset[7], undef;
 is $subset[8], undef;
 is $subset[-1], undef;
+
+# Exists
+ok exists $subset[0];
+ok !exists $subset[20];
+ok !exists $subset[-1];
 
 # Storing
 ok $subset[1]=42;
@@ -84,6 +95,40 @@ is_deeply \@array, [11,22,33,42,55,66,77,88,99,undef,undef,123];
 is_deeply \@subset, [33,42,55,undef,88,456,123] or diag explain \@subset;
 is_deeply \@array, [11,22,33,42,55,undef,77,88,99,456,undef,123];
 
-#TODO Later: Tests for "not supported" features
+# Errors
+ok exception { tie my @foo, 'Tie::Subset::Array', [1..3], [0], 'foo' };
+ok exception { tie my @foo, 'Tie::Subset::Array', {}, [0] };
+ok exception { tie my @foo, 'Tie::Subset::Array', [1..3], {} };
+ok exception { tie my @foo, 'Tie::Subset::Array', [1..3], ['a'] };
+ok exception { tie my @foo, 'Tie::Subset::Array', [1..3], [\0] };
+
+# Not Supported
+{
+	no warnings FATAL=>'all'; use warnings;  ## no critic (ProhibitNoWarnings)
+	ok 1==grep { /\b\Qnot (yet) supported\E\b/ } warns {
+		$#subset = 1;
+	};
+	ok 1==grep { /\b\Qnot (yet) supported\E\b/ } warns {
+		@subset = ();
+	};
+	ok 1==grep { /\b\Qnot (yet) supported\E\b/ } warns {
+		push @subset, 'a';
+	};
+	ok 1==grep { /\b\Qnot (yet) supported\E\b/ } warns {
+		pop @subset;
+	};
+	ok 1==grep { /\b\Qnot (yet) supported\E\b/ } warns {
+		shift @subset;
+	};
+	ok 1==grep { /\b\Qnot (yet) supported\E\b/ } warns {
+		unshift @subset, 'z';
+	};
+	ok 1==grep { /\b\Qnot (yet) supported\E\b/ } warns {
+		splice @subset, 0, 2, 'x';
+	};
+	ok 1==grep { /\b\Qnot (yet) supported\E\b/ } warns {
+		delete $subset[0];
+	};
+}
 
 done_testing;
