@@ -3,7 +3,7 @@ Tie-Subset
 
 This is the distribution of the Perl modules
 [`Tie::Subset::Hash`](https://metacpan.org/pod/Tie::Subset::Hash),
-[`Tie::Subset::Hash`](https://metacpan.org/pod/Tie::Subset::Hash::Masked), and
+[`Tie::Subset::Hash::Masked`](https://metacpan.org/pod/Tie::Subset::Hash::Masked), and
 [`Tie::Subset::Array`](https://metacpan.org/pod/Tie::Subset::Array).
 
 They are Perl extensions for `tie`-ing arrays and hashes to a
