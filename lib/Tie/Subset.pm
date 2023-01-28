@@ -36,17 +36,15 @@ our $VERSION = '0.02';
 sub TIEHASH {  ## no critic (RequireArgUnpacking)
 	require Tie::Subset::Hash;
 	@_>1 or croak "bad number of arguments to tie";
-	my $class = shift;
-	$class = 'Tie::Subset::Hash' if $class eq __PACKAGE__;
-	return Tie::Subset::Hash::TIEHASH($class, @_);
+	croak "Tie::Subset can't (yet) be subclassed" unless shift eq __PACKAGE__;
+	return Tie::Subset::Hash::TIEHASH('Tie::Subset::Hash', @_);
 }
 
 sub TIEARRAY {  ## no critic (RequireArgUnpacking)
 	require Tie::Subset::Array;
 	@_>1 or croak "bad number of arguments to tie";
-	my $class = shift;
-	$class = 'Tie::Subset::Array' if $class eq __PACKAGE__;
-	return Tie::Subset::Array::TIEARRAY($class, @_);
+	croak "Tie::Subset can't (yet) be subclassed" unless shift eq __PACKAGE__;
+	return Tie::Subset::Array::TIEARRAY('Tie::Subset::Array', @_);
 }
 
 1;

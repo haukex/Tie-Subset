@@ -113,6 +113,8 @@ ok exception { tie my %foo, 'Tie::Subset::Hash', [], ['x'] };
 ok exception { tie my %foo, 'Tie::Subset::Hash', {x=>1,y=>2}, {} };
 ok exception { tie my %foo, 'Tie::Subset::Hash', {x=>1,y=>2}, [undef] };
 ok exception { tie my %foo, 'Tie::Subset::Hash', {x=>1,y=>2}, [\'x'] };
+ok exception { tie my %foo, 'Tie::Subset' };
+ok exception { Tie::Subset::TIEHASH('Tie::Subset::Foobar', {}) };
 
 # Scalar
 is scalar(%subset), scalar( %{tied(%subset)->{keys}} );

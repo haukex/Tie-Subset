@@ -95,6 +95,8 @@ ok exception { tie my @foo, 'Tie::Subset::Array', {}, [0] };
 ok exception { tie my @foo, 'Tie::Subset::Array', [1..3], {} };
 ok exception { tie my @foo, 'Tie::Subset::Array', [1..3], ['a'] };
 ok exception { tie my @foo, 'Tie::Subset::Array', [1..3], [\0] };
+ok exception { tie my @foo, 'Tie::Subset' };
+ok exception { Tie::Subset::TIEARRAY('Tie::Subset::Foobar', []) };
 
 # Not Supported
 {
