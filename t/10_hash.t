@@ -117,7 +117,12 @@ ok exception { tie my %foo, 'Tie::Subset' };
 ok exception { Tie::Subset::TIEHASH('Tie::Subset::Foobar', {}) };
 
 # Scalar
-is scalar(%subset), scalar( %{tied(%subset)->{keys}} );
+SKIP: {
+	skip "test fails on pre-5.8.9 Perls", 1 if $] lt '5.008009';
+	# Since it's mostly here for code coverage, it's ok to skip it
+	# scalar(%hash) really only gets useful on Perl 5.26+ anyway (returns the number of keys)
+	is scalar(%subset), scalar( %{tied(%subset)->{keys}} );
+}
 
 # Not Supported
 {
