@@ -87,6 +87,17 @@ ok delete $hash{bbb}; # remove from underlying hash
 is_deeply [sort keys %subset], [qw/ aaa ccc zzz /];
 is_deeply [sort values %subset], [777,789,888];
 
+# Scalar
+SKIP: {
+	skip "test fails on pre-5.8.9 Perls", 1 if $] lt '5.008009';
+	# Since it's mostly here for code coverage, it's ok to skip it
+	# scalar(%hash) really only gets useful on Perl 5.26+ anyway (returns the number of keys)
+	if ( $] lt '5.026' )
+		{ is scalar(%subset), scalar( %{tied(%subset)->{keys}} ) }
+	else
+		{ is scalar(%subset), 3 }
+}
+
 # delete-ing
 {
 	no warnings FATAL=>'all'; use warnings;  ## no critic (ProhibitNoWarnings)
@@ -115,14 +126,6 @@ ok exception { tie my %foo, 'Tie::Subset::Hash', {x=>1,y=>2}, [undef] };
 ok exception { tie my %foo, 'Tie::Subset::Hash', {x=>1,y=>2}, [\'x'] };
 ok exception { tie my %foo, 'Tie::Subset' };
 ok exception { Tie::Subset::TIEHASH('Tie::Subset::Foobar', {}) };
-
-# Scalar
-SKIP: {
-	skip "test fails on pre-5.8.9 Perls", 1 if $] lt '5.008009';
-	# Since it's mostly here for code coverage, it's ok to skip it
-	# scalar(%hash) really only gets useful on Perl 5.26+ anyway (returns the number of keys)
-	is scalar(%subset), scalar( %{tied(%subset)->{keys}} );
-}
 
 # Not Supported
 {

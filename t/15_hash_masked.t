@@ -86,7 +86,7 @@ SKIP: {
 	if ( $] lt '5.026' )
 		{ is scalar(%masked), scalar( %{tied(%masked)->{hash}} ) }
 	else
-		{ is scalar(%masked), scalar( keys(%masked) ) }
+		{ is scalar(%masked), 3 }
 }
 
 # delete-ing

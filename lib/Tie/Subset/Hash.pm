@@ -156,7 +156,12 @@ sub CLEAR {
 
 sub SCALAR {
 	my ($self) = @_;
-	return scalar %{$self->{keys}};
+	# I'm not sure why the following counts as two statements in the coverage tool
+	# uncoverable branch true
+	# uncoverable statement count:2
+	return scalar %{$self->{keys}} if $] lt '5.026';
+	my %keys = map {$_=>1} grep {exists $self->{hash}{$_}} keys %{$self->{keys}};
+	return scalar keys %keys;
 }
 
 sub UNTIE {
